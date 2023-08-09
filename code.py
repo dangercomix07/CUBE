@@ -40,6 +40,13 @@ Kp = 1
 Ki = 0.001
 Kd = 0
 
+#Motor Cap Control
+lcap = 4400 #Lower cap
+ucap = 5300 #Upper cap
+zp = 4850   #zero-point
+pwmRange = 450
+
+
 #GYRO-DRIFT-COMPENSATION
 # Constants for calibration
 CALIBRATION_TIME = 5  # Calibration time in seconds
@@ -96,7 +103,17 @@ while True:
     #de = (e-eprev)/dt
     
     #PID Controller
-    bldc.duty_cycle = int(4850 + Kp*(e) + Ki*(ie) + Kd*de)
+    u = Kp*(e) + Ki*(ie) + Kd*de #Control Input
+    
+    if u>ucap:
+        u_max =ucap
+    elif u<lcap:
+        u_max = lcap
+        
+    if abs(u)<pwmRange:
+        bldc.duty_cycle = int(4850 + u)
+    else:
+        bldc.duty_cycle = int(4850 + u_max)
     
     eprev = e
     time.sleep(0.025) #40Hz sampling rate
