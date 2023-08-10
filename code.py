@@ -36,8 +36,8 @@ de = 0
 eprev = 0
 
 #PID Parameters
-Kp = 1
-Ki = 0.001
+Kp = 2
+Ki = 0  #0.001
 Kd = 0
 
 #Motor Cap Control
@@ -84,6 +84,13 @@ while True:
     if(abs(gyro_z)<threshold):
         gyro_z = 0
     yaw += math.degrees(gyro_z*dt)
+
+    #Cyclic relation (><360 resets to 0)
+    while yaw>360:
+        yaw = yaw - 360
+    while yaw<-360:
+        yaw = yaw + 360
+
     #Implement moving average filter here
     #print(dt) #need to be almost constant
     #print(raw_gyro_z)
@@ -91,10 +98,11 @@ while True:
     print(yaw)
     
     desired_angle = 0
+    #+-0.5 range in desired angle
     if(yaw>0):
-        e = yaw -3
+        e = yaw - 0.5
     elif(yaw<0):
-        e = yaw + 3
+        e = yaw + 0.5
     else:
         e = 0
         
@@ -128,5 +136,7 @@ while True:
 #         led.value = 0
         
 ################################################
+
+
 
 
