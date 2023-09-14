@@ -35,7 +35,7 @@ ie = 0
 de = 0
 eprev = 0
 
-#PID Parameters
+#PID Parameters #NOT TUNED
 Kp = 2
 Ki = 0  #0.001
 Kd = 0
@@ -90,11 +90,7 @@ while True:
         yaw = yaw - 360
     while yaw<-360:
         yaw = yaw + 360
-
-    #Implement moving average filter here
-    #print(dt) #need to be almost constant
-    #print(raw_gyro_z)
-    #print(gyro_z)
+    
     print(yaw)
     
     desired_angle = 0
@@ -108,7 +104,7 @@ while True:
         
     #Computing integral and derivative    
     ie += e*dt
-    #de = (e-eprev)/dt
+    de = (e-eprev)/dt
     
     #PID Controller
     u = Kp*(e) + Ki*(ie) + Kd*de #Control Input
@@ -126,16 +122,6 @@ while True:
     eprev = e
     time.sleep(0.025) #40Hz sampling rate
     
-###### Led Blink at perpendicular angles ########
-    
-#     if(yaw>86 and yaw<94):
-#         led.value = 1
-#     elif(yaw<-86 and yaw>-94):
-#         led.value =1
-#     else:
-#         led.value = 0
-        
-################################################
 
 
 
